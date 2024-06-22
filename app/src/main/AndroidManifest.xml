@@ -13,6 +13,12 @@
         android:theme="@style/Theme.BTL"
         tools:targetApi="31">
         <activity
+            android:name=".Gameplay.Offline2Player.Offline2PlayerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Gameplay.GameActitvity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
