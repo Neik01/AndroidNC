@@ -76,7 +76,7 @@
                 android:layout_marginTop="20dp"
                 >
                 <Button
-                    android:id="@+id/button_play"
+                    android:id="@+id/button_play_online"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Chơi Online"
@@ -87,7 +87,7 @@
                 </Button>
 
                 <Button
-                    android:id="@+id/button_play2"
+                    android:id="@+id/button_play_offline"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Chơi Offline"
@@ -98,7 +98,7 @@
 
                 </Button>
                 <Button
-                    android:id="@+id/button_play3"
+                    android:id="@+id/button_play_bot"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Chơi với máy"

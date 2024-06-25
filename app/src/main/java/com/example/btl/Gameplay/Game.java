@@ -1,7 +1,8 @@
 package com.example.btl.Gameplay;
 
+import java.io.Serializable;
 
-public class Game {
+public class Game  implements Serializable {
 
     private int[][] gameBoard;
 
@@ -10,7 +11,6 @@ public class Game {
     private static Game game;
 
     private final int colNum = 15;
-
 
     private final int rowNum = 17;
 
@@ -29,6 +29,7 @@ public class Game {
 
     public synchronized void destroyInstance(){
         this.game=null;
+        this.gameBoard=null;
     }
 
     public boolean move(int x){
@@ -37,7 +38,7 @@ public class Game {
         int row=coord[0];
         int col=coord[1];
 
-        if(this.gameBoard[row][col]==0){
+        if(this.gameBoard[row][col]==0&&this.game!=null){
             this.gameBoard[row][col]=this.player;
 
             return true;
@@ -58,6 +59,7 @@ public class Game {
                 checkDiagonal(row,col)||
                 checkReverseDiagonal(row,col)
         ){
+
             return true;
         }
 
@@ -197,8 +199,8 @@ public class Game {
         return strike==5;
     }
     public int[] findCoordinate(int index){
-        int row = index / 15;
-        int col = index % 15;
+        int row = index / this.colNum;
+        int col = index % this.colNum;
         return new int[]{row, col};
 
     }
@@ -215,4 +217,11 @@ public class Game {
         return gameBoard;
     }
 
+    public int getColNum() {
+        return colNum;
+    }
+
+    public int getRowNum() {
+        return rowNum;
+    }
 }

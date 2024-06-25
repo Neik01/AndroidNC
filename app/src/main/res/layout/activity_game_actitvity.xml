@@ -10,7 +10,6 @@
 
     >
 
-
     <LinearLayout
         android:id="@+id/player_label"
         android:layout_width="match_parent"
@@ -28,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center|start"
-            android:text="Player 1"
+            android:text="Người chơi 1"
             android:textSize="20dp"
             android:layout_weight="1"
             android:layout_marginStart="10dp"
@@ -55,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:text="Player 2"
+            android:text="Người chơi 2"
             android:textSize="20dp"
             android:layout_weight="1"
             android:textAlignment="textEnd"
@@ -68,44 +67,94 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/player_label"
         app:layout_constraintStart_toStartOf="parent"
-
         app:layout_constraintEnd_toEndOf="parent"
         android:textSize="30dp"
         android:textColor="@color/white"
+        android:layout_marginTop="20dp"
         >
 
     </TextView>
 
 
-    <FrameLayout
-        android:id="@+id/board_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/score_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="25dp"
-        >
-
-    </FrameLayout>
-
-<!--    <GridView-->
-<!--        android:id="@+id/game_board"-->
+<!--    <FrameLayout-->
+<!--        android:id="@+id/offline_board_container"-->
 <!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="wrap_content"-->
-<!--        android:numColumns="15"-->
-<!--        android:verticalSpacing="0.5dp"-->
-<!--        android:horizontalSpacing="0.5dp"-->
 <!--        app:layout_constraintTop_toBottomOf="@id/score_text"-->
 <!--        app:layout_constraintEnd_toEndOf="parent"-->
 <!--        app:layout_constraintStart_toStartOf="parent"-->
 <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        android:background="@color/black"-->
-<!--        android:paddingRight="3dp"-->
-<!--        android:paddingLeft="3dp"-->
+<!--        android:layout_marginBottom="25dp"-->
 <!--        >-->
 
-<!--    </GridView>-->
+<!--    </FrameLayout>-->
+    <GridView
+        android:id="@+id/game_board"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numColumns="15"
+        android:verticalSpacing="0.5dp"
+        android:horizontalSpacing="0.5dp"
+        app:layout_constraintTop_toBottomOf="@id/score_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/black"
+        android:paddingRight="3dp"
+        android:paddingLeft="3dp"
+        >
+
+    </GridView>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/offline_board_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        >
+        <android.widget.Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/settings_cogwheel_button_svgrepo_com"
+            android:backgroundTint="@color/white"
+            android:layout_weight="1"
+            android:layout_gravity="center|start"
+            >
+
+        </android.widget.Button>
+
+        <android.widget.Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/undo_left_svgrepo_com"
+            android:backgroundTint="@color/white"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            >
+
+        </android.widget.Button>
+        <android.widget.Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/menu_svgrepo_com"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:layout_gravity="center|end"
+            >
+
+        </android.widget.Button>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/game_result_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

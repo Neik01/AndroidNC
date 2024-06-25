@@ -2,11 +2,12 @@ package com.example.btl.Gameplay;
 
 import android.os.CountDownTimer;
 
+import java.io.Serializable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class Timer {
+public class Timer implements Serializable {
 
     private static Timer instance;
     private CountDownTimer countDownTimer;

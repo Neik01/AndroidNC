@@ -9,4 +9,7 @@
     <color name="cyan">#FF00FFFF</color>
     <color name="magenta">#FFFF00FF</color>
     <color name="transparent_black">#80000000</color>
+    <color name="navy">#071952</color>
+    <color name="teal">#37B7C3</color>
+    <color name="dark_blue">#088395</color>
 </resources>

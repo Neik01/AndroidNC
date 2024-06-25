@@ -1,5 +1,6 @@
 package com.example.btl;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -15,13 +16,19 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.btl.Gameplay.GameActitvity;
 import com.example.btl.Fragment.SettingsFragment;
 import com.example.btl.Gameplay.Offline2Player.Offline2PlayerActivity;
+import com.example.btl.Gameplay.OfflineSinglePlayer.OfflineSinglePlayer;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
 
      ImageButton settingsButton;
 
-     Button button1;
+     Button buttonPlayOnline;
+
+     Button buttonPlayOffline;
+
+     Button buttonPlayBot;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,16 +43,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         settingsButton = findViewById(R.id.settings_button);
         settingsButton.setOnClickListener(this);
 
-        button1=findViewById(R.id.button_play);
-        button1.setOnClickListener(this);
-        Button button2= findViewById(R.id.button_play2);
-        button2.setOnClickListener(this::onClick);
+        buttonPlayOnline =findViewById(R.id.button_play_online);
+        buttonPlayOnline.setOnClickListener(this);
+
+        buttonPlayOffline= findViewById(R.id.button_play_offline);
+        buttonPlayOffline.setOnClickListener(this::onClick);
+
+        buttonPlayBot= findViewById(R.id.button_play_bot);
+        buttonPlayBot.setOnClickListener(this::onClick);
     }
+
 
     @Override
     public void onClick(View v) {
 
         int id= v.getId();
+
         if (id == R.id.settings_button) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, new SettingsFragment())
@@ -54,12 +67,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);
         }
-        if(id == R.id.button_play){
+        if(id == R.id.button_play_online){
             Intent intent = new Intent(this, GameActitvity.class);
             startActivity(intent);
         }
-        if (id == R.id.button_play2){
+        if (id == R.id.button_play_offline){
             Intent intent=new Intent(this, Offline2PlayerActivity.class);
+            startActivity(intent);
+        }
+        if (id == R.id.button_play_bot){
+            Intent intent=new Intent(this, OfflineSinglePlayer.class);
             startActivity(intent);
         }
     }
