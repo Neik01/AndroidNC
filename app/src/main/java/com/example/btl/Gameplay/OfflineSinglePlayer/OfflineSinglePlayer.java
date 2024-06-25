@@ -35,14 +35,19 @@ public class OfflineSinglePlayer extends GameActitvity {
         if(game.move(position)){
             if (player==1){
                 imageView.setImageResource(R.drawable.cross);
+
+
+                gridView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        int botMovePosition = botMove(position,1);
+                        Long itemId = gridView.getAdapter().getItemId(botMovePosition);
+                        ImageView botImageView = (ImageView) gridView.getChildAt(botMovePosition);
+                        gridView.performItemClick(botImageView,botMovePosition,itemId);
+                    }
+                },500);
+
                 game.setPlayer(2);
-
-                int botMovePosition = botMove(position,1);
-                Long itemId = gridView.getAdapter().getItemId(botMovePosition);
-                ImageView botImageView = (ImageView) gridView.getChildAt(botMovePosition);
-                gridView.performItemClick(botImageView,botMovePosition,itemId);
-
-
             }
             else if (player==2){
                 imageView.setImageResource(R.drawable.circle);
