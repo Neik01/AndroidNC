@@ -96,8 +96,6 @@ public class OnlineGameActivity extends GameActitvity implements ValueEventListe
                         updateTurnView(gameplay.getPlayerTurn());
                     }
                 }
-
-
             }
 
             else  Toast.makeText(this, "It's not your turn", Toast.LENGTH_SHORT).show();
@@ -106,15 +104,10 @@ public class OnlineGameActivity extends GameActitvity implements ValueEventListe
 
     private void makeMove(int move) {
 
-        if (playerTurn == 1){
-            room.getMoves().put("player1", move);
-        }
-        else if (playerTurn == 2){
-            room.getMoves().put("player2", move);
-        }
+        String playerKey = (playerTurn == 1) ? "player1" : "player2";
+        room.getMoves().put(playerKey, move);
 
         room.setTurns(room.getTurns() == 1 ? 2 : 1);
-
         gameRef.updateChildren(room.toUpdateMap());
 
     }
@@ -122,16 +115,10 @@ public class OnlineGameActivity extends GameActitvity implements ValueEventListe
     @Override
     public void onDataChange(@NonNull DataSnapshot snapshot) {
         room.setTurns(snapshot.getValue(Integer.class));
-        if(room.getTurns()==1){
-            gameRef.child("moves").child("player2")
-                    .get().addOnCompleteListener(OnlineGameActivity.this::onComplete);
+        String opponentPlayerKey = (room.getTurns() == 1) ? "player2" : "player1";
 
-        }
-        else if (room.getTurns()==2){
-            gameRef.child("moves").child("player1")
-                    .get().addOnCompleteListener(OnlineGameActivity.this::onComplete);
-        }
-        Toast.makeText(OnlineGameActivity.this, "Turn: "+room.getTurns(), Toast.LENGTH_SHORT).show();
+        gameRef.child("moves").child(opponentPlayerKey)
+                .get().addOnCompleteListener(this);
 
     }
 
