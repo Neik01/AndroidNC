@@ -8,8 +8,10 @@ public class Offline2PlayerActivity extends GameActitvity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
+        super.setPlayer1Name("người chơi 1");
+        super.setPlayer2Name("người chơi 2");
+        super.onCreate(savedInstanceState);
     }
 
 }

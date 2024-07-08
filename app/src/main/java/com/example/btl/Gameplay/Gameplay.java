@@ -2,33 +2,33 @@ package com.example.btl.Gameplay;
 
 import java.io.Serializable;
 
-public class Game  implements Serializable {
+public class Gameplay implements Serializable {
 
     private int[][] gameBoard;
 
-    private int player;
+    private int playerTurn;
 
-    private static Game game;
+    private static Gameplay gameplay;
 
     private final int colNum = 15;
 
     private final int rowNum = 17;
 
-    private Game(){
+    private Gameplay(){
         this.gameBoard=new int[rowNum][colNum];
-        this.player=1;
+        this.playerTurn =1;
     }
 
 
-    public static synchronized Game getInstance(){
-        if(game==null){
-            game=new Game();
+    public static synchronized Gameplay getInstance(){
+        if(gameplay ==null){
+            gameplay =new Gameplay();
         }
-        return game;
+        return gameplay;
     }
 
     public synchronized void destroyInstance(){
-        this.game=null;
+        this.gameplay =null;
         this.gameBoard=null;
     }
 
@@ -38,11 +38,14 @@ public class Game  implements Serializable {
         int row=coord[0];
         int col=coord[1];
 
-        if(this.gameBoard[row][col]==0&&this.game!=null){
-            this.gameBoard[row][col]=this.player;
+        if(gameplay!=null){
+            if(this.gameBoard[row][col]==0){
+                this.gameBoard[row][col]=this.playerTurn;
 
-            return true;
+                return true;
+            }
         }
+
 
         return false;
     }
@@ -158,7 +161,7 @@ public class Game  implements Serializable {
         int loopLeft = 5-strike;
 
         for(int i=1; i <= loopLeft;i++){
-            if((row - i) >= 0&& (col + i) < rowNum){
+            if((row - i) >= 0&& (col + i) < colNum){
                 if(this.gameBoard[row - i][col + i]==this.gameBoard[row][col]){
                     strike++;
                 }
@@ -205,12 +208,12 @@ public class Game  implements Serializable {
 
     }
 
-    public int getPlayer() {
-        return player;
+    public int getPlayerTurn() {
+        return playerTurn;
     }
 
-    public void setPlayer(int player) {
-        this.player = player;
+    public void setPlayerTurn(int playerTurn) {
+        this.playerTurn = playerTurn;
     }
 
     public int[][] getGameBoard() {

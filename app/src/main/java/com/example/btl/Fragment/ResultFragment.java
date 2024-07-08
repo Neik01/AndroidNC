@@ -2,7 +2,6 @@ package com.example.btl.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,8 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import com.example.btl.Gameplay.Game;
-import com.example.btl.Gameplay.Offline2Player.Offline2PlayerActivity;
+import com.example.btl.Gameplay.Gameplay;
 import com.example.btl.MainActivity;
 import com.example.btl.R;
 
@@ -26,21 +24,27 @@ public class ResultFragment extends Fragment implements View.OnTouchListener,Vie
     private TextView resultTextView;
 
     private ConstraintLayout rootLayout;
-    private Game game;
+    private Gameplay gameplay;
 
     private Button rematchButton;
 
     private Button exitBtn;
+
+    private String winnerString1;
+
+    private String winnerString2;
 
     public ResultFragment() {
         super(R.layout.result_fragment);
     }
 
 
-    public static ResultFragment newInstance(Game game) {
+    public static ResultFragment newInstance(Gameplay gameplay, String winnerString1, String winnerString2) {
         ResultFragment fragment = new ResultFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("game", game);
+        bundle.putSerializable("game", gameplay);
+        bundle.putString("winnerString1",winnerString1);
+        bundle.putString("winnerString2",winnerString2);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -50,7 +54,11 @@ public class ResultFragment extends Fragment implements View.OnTouchListener,Vie
         View view= inflater.inflate(R.layout.result_fragment,container,false);
         this.resultTextView=view.findViewById(R.id.winner_tv);
 
-        this.game = (Game) getArguments().getSerializable("game");
+        this.gameplay = (Gameplay) getArguments().getSerializable("game");
+
+        this.winnerString1 = getArguments().getString("winnerString1");
+        this.winnerString2 = getArguments().getString("winnerString2");
+
         this.rootLayout = view.findViewById(R.id.result_root);
 
         rootLayout.setOnTouchListener(this);
@@ -62,10 +70,10 @@ public class ResultFragment extends Fragment implements View.OnTouchListener,Vie
         exitBtn.setOnClickListener(this);
 
 
-        if (game.getPlayer()==1)
-            resultTextView.setText("Người chơi 2 chiến thắng");
+        if (gameplay.getPlayerTurn()==1)
+            resultTextView.setText(winnerString1.toUpperCase());
         else
-            resultTextView.setText("Người chơi 1 chiến thắng");
+            resultTextView.setText(winnerString2.toUpperCase());
         return view;
     }
 

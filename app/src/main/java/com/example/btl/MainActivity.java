@@ -17,6 +17,8 @@ import com.example.btl.Gameplay.GameActitvity;
 import com.example.btl.Fragment.SettingsFragment;
 import com.example.btl.Gameplay.Offline2Player.Offline2PlayerActivity;
 import com.example.btl.Gameplay.OfflineSinglePlayer.OfflineSinglePlayer;
+import com.example.btl.Gameplay.Online.OnlineGameActivity;
+import com.example.btl.Gameplay.Online.WaitingRoomActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);
         }
         if(id == R.id.button_play_online){
-            Intent intent = new Intent(this, GameActitvity.class);
+            Intent intent = new Intent(this, WaitingRoomActivity.class);
             startActivity(intent);
         }
         if (id == R.id.button_play_offline){

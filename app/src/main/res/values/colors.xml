@@ -12,4 +12,6 @@
     <color name="navy">#071952</color>
     <color name="teal">#37B7C3</color>
     <color name="dark_blue">#088395</color>
+    <color name="light_black">#4d4f4e</color>
+    <color name="pastel_blue">#AAD7D9</color>
 </resources>

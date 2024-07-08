@@ -5,18 +5,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/transparent_black"
+    android:id="@+id/settings_root_layout"
     >
 
-    <GridLayout
-        android:id="@+id/settings_layout"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/rounded_border"
+        android:backgroundTint="@color/white"
+        android:padding="20dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        >
+    <GridLayout
+        android:id="@+id/settings_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
         android:columnCount="2"
         android:rowCount="2"
+
 
         >
 
@@ -26,11 +39,13 @@
             android:text="Âm thanh"
             android:textSize="20dp"
             android:layout_gravity="center"
+            android:textColor="@color/blue"
             />
 
 
 
         <CheckBox
+            android:id="@+id/settings_sound_checkbox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="fill"
@@ -47,11 +62,13 @@
             android:gravity="center"
             android:layout_gravity="center"
             android:layout_marginStart="5dp"
+            android:textColor="@color/blue"
             >
 
         </TextView>
 
         <EditText
+            android:id="@+id/settings_name_edittext"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Nhập tên"
@@ -60,25 +77,25 @@
             android:paddingHorizontal="10dp"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
+            android:textColor="@color/blue"
             />
     </GridLayout>
 
 
-
-
         <Button
-            android:layout_height="wrap_content"
+            android:id="@+id/settings_close_btn"
             android:layout_width="wrap_content"
-            android:text="Đóng"
-            android:gravity="center"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            app:layout_constraintTop_toBottomOf="@id/settings_layout"
-            app:layout_constraintStart_toStartOf="parent"
+            android:backgroundTint="@color/teal"
+            android:gravity="center"
+            android:text="Đóng"
+            android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
-
-            >
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/settings_layout">
 
         </Button>
 
-
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

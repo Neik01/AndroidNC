@@ -3,7 +3,6 @@ package com.example.btl.Gameplay;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -22,9 +21,7 @@ import com.example.btl.R;
 public class GameActitvity extends AppCompatActivity implements
         Timer.TimerListener, AdapterView.OnItemClickListener {
 
-    private TextView testTV;
-
-    private Game game;
+    private Gameplay gameplay;
 
     GridView gameBoardView;
     private Timer timer;
@@ -34,9 +31,15 @@ public class GameActitvity extends AppCompatActivity implements
 
     BoardGameAdapter boardGameAdapter;
 
-    private  String player1Name = "người chơi 1";
+    private  String player1Name;
 
-    private  String player2Name = "người chơi 2";
+    private  String player2Name;
+
+    private TextView player1NameView;
+
+    private TextView player2NameView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +56,7 @@ public class GameActitvity extends AppCompatActivity implements
     }
 
     public void init(){
-        game = Game.getInstance();
+        gameplay = Gameplay.getInstance();
 
         timer= Timer.getInstance();
 
@@ -61,15 +64,23 @@ public class GameActitvity extends AppCompatActivity implements
 
         turnTextView = findViewById(R.id.score_text);
 
+        player1NameView = findViewById(R.id.player1_label);
+
+        player2NameView = findViewById(R.id.player2_label);
+
+        player1NameView.setText(player1Name.substring(0,1).toUpperCase()+player1Name.substring(1));
+
+        player2NameView.setText(player2Name.substring(0,1).toUpperCase()+player2Name.substring(1));
+
         gameBoardView = findViewById(R.id.game_board);
 
-        boardGameAdapter = new BoardGameAdapter(this,game.getGameBoard());
+        boardGameAdapter = new BoardGameAdapter(this, gameplay.getGameBoard());
 
         gameBoardView.setAdapter(boardGameAdapter);
 
         gameBoardView.setOnItemClickListener(this::onItemClick);
 
-        timer.startTimer(31000,this);
+//        timer.startTimer(31000,this);
 
         turnTextView.setText("Lượt của "+ player1Name);
     }
@@ -86,16 +97,18 @@ public class GameActitvity extends AppCompatActivity implements
 
     @Override
     public void onFinish() {
+        String winnerString1= player2Name+" chiến thắng";
+        String winnerString2 = player1Name+" chiến thắng";
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.game_result_container,ResultFragment.newInstance(game))
+                .replace(R.id.game_result_container,ResultFragment.newInstance(gameplay,winnerString1,winnerString2))
                 .commit();
-        this.game.destroyInstance();
+        this.gameplay.destroyInstance();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        game.destroyInstance();
+        gameplay.destroyInstance();
         timer.cancelTimer();
     }
 
@@ -103,44 +116,66 @@ public class GameActitvity extends AppCompatActivity implements
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         ImageView imageView = (ImageView) view.findViewById(R.id.iv_game_cell);
 
-        int player= game.getPlayer();
+        int player= gameplay.getPlayerTurn();
 
-        if (game.move(position)) {
-            if (player==1){
-                imageView.setImageResource(R.drawable.cross);
-                game.setPlayer(2);
-            }
-            else if (player==2){
-                imageView.setImageResource(R.drawable.circle);
-                game.setPlayer(1);
+        if (gameplay.move(position)){
+
+            updateBoard(imageView,player);
+
+            if (!checkWinner(position)) {
+
+                gameplay.setPlayerTurn(player == 1 ? 2 : 1);
+
+                updateTurnView(gameplay.getPlayerTurn());
             }
 
         }
 
-        checkWinner(position, player);
     }
 
-    public void checkWinner(int position, int player) {
-        if(game.checkWinner(position)){
-
+    public boolean checkWinner(int position) {
+        if(gameplay.checkWinner(position)){
+            String winnerString1= player1Name+" chiến thắng";
+            String winnerString2 = player2Name+" chiến thắng";
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.game_result_container, ResultFragment.newInstance(game))
+                    .replace(R.id.game_result_container, ResultFragment.newInstance(gameplay,winnerString1,winnerString2))
                     .commit();
 
             timer.cancelTimer();
-            this.game.destroyInstance();
-
+            this.gameplay.destroyInstance();
+            return true;
         }
-        else {
-            timer.startTimer(31000,this);
-            if (player ==1){
-                turnTextView.setText("Lượt của "+ player1Name);
-            }
-            else{
-                turnTextView.setText("Lượt của "+ player2Name);
-            }
+        return false;
+    }
+
+    public void updateBoard(ImageView imageView,int player){
+        if (player==1){
+            imageView.setImageResource(R.drawable.cross);
+        }
+        else if (player==2){
+            imageView.setImageResource(R.drawable.circle);
         }
     }
 
+    public void updateTurnView(int player){
+//        timer.startTimer(31000,this);
+        if (player ==1){
+            turnTextView.setText("Lượt của "+ player1Name);
+        }
+        else{
+            turnTextView.setText("Lượt của "+ player2Name);
+        }
+    }
 
+    public void setPlayer1Name(String player1Name) {
+        this.player1Name = player1Name;
+    }
+
+    public void setPlayer2Name(String player2Name) {
+        this.player2Name = player2Name;
+    }
+
+    public GridView getGameBoardView() {
+        return gameBoardView;
+    }
 }

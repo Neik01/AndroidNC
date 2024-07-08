@@ -13,6 +13,12 @@
         android:theme="@style/Theme.BTL"
         tools:targetApi="31">
         <activity
+            android:name=".Gameplay.Online.WaitingRoomActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Gameplay.Online.OnlineGameActivity"
+            android:exported="false" />
+        <activity
             android:name=".Gameplay.Offline2Player.Offline2PlayerActivity"
             android:exported="false" />
         <activity
