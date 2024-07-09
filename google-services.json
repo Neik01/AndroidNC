@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "778730547385",
+    "firebase_url": "https://caroapp-af391-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "caroapp-af391",
+    "storage_bucket": "caroapp-af391.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:778730547385:android:d3a9cf87caf6ba350b5368",
+        "android_client_info": {
+          "package_name": "com.example.btl"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9wyCkzBO6wL9nCwSbb_yfpPaUpWbeAQg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
