@@ -1,7 +1,10 @@
 package com.example.btl.Fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,8 +16,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import com.example.btl.Gameplay.Gameplay;
+import com.example.btl.Gameplay.Online.OnlineGameActivity;
 import com.example.btl.MainActivity;
 import com.example.btl.R;
 
@@ -33,6 +38,8 @@ public class ResultFragment extends Fragment implements View.OnTouchListener,Vie
     private String winnerString1;
 
     private String winnerString2;
+
+    MediaPlayer mediaPlayer;
 
     public ResultFragment() {
         super(R.layout.result_fragment);
@@ -70,6 +77,15 @@ public class ResultFragment extends Fragment implements View.OnTouchListener,Vie
         exitBtn.setOnClickListener(this);
 
 
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+        boolean sound = sharedPreferences.getBoolean("sound",true);
+        if(sound){
+            mediaPlayer = MediaPlayer.create(this.getActivity(), R.raw.goodresult_82807);
+            mediaPlayer.start();
+
+        }
+
+
         if (gameplay.getPlayerTurn()==1)
             resultTextView.setText(winnerString1.toUpperCase());
         else
@@ -86,6 +102,10 @@ public class ResultFragment extends Fragment implements View.OnTouchListener,Vie
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.rematch_btn) {
+
+            if(this.getActivity() instanceof OnlineGameActivity){
+                Log.e("Result","From online activity");
+            }
             this.getActivity().recreate();
             this.getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
         }

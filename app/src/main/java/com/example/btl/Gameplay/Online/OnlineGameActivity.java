@@ -34,9 +34,6 @@ public class OnlineGameActivity extends GameActitvity implements ValueEventListe
     String playerName;
 
     GameRoom room;
-
-    int opponentMove;
-
     int playerTurn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,8 +114,12 @@ public class OnlineGameActivity extends GameActitvity implements ValueEventListe
         room.setTurns(snapshot.getValue(Integer.class));
         String opponentPlayerKey = (room.getTurns() == 1) ? "player2" : "player1";
 
-        gameRef.child("moves").child(opponentPlayerKey)
-                .get().addOnCompleteListener(this);
+        if(room.getTurns() == playerTurn){
+
+            gameRef.child("moves").child(opponentPlayerKey)
+                    .get().addOnCompleteListener(this);
+
+        }
 
     }
 

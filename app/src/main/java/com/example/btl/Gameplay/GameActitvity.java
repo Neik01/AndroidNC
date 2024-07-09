@@ -2,6 +2,8 @@ package com.example.btl.Gameplay;
 
 
 
+import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.preference.PreferenceManager;
 
 import com.example.btl.Fragment.ResultFragment;
 import com.example.btl.R;
@@ -39,7 +42,7 @@ public class GameActitvity extends AppCompatActivity implements
 
     private TextView player2NameView;
 
-
+    private boolean isSoundOn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +86,10 @@ public class GameActitvity extends AppCompatActivity implements
 //        timer.startTimer(31000,this);
 
         turnTextView.setText("Lượt của "+ player1Name);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        isSoundOn = sharedPreferences.getBoolean("sound",true);
+
     }
 
     @Override
@@ -149,6 +156,12 @@ public class GameActitvity extends AppCompatActivity implements
     }
 
     public void updateBoard(ImageView imageView,int player){
+        isSoundOn = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("sound",true);
+        if (isSoundOn){
+            final MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.move_self);
+            mediaPlayer.start();
+        }
+
         if (player==1){
             imageView.setImageResource(R.drawable.cross);
         }
