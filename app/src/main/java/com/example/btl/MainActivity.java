@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if(id == R.id.button_play_online){
             Intent intent = new Intent(this, WaitingRoomActivity.class);
+            intent.putExtra("origin","MainActivity");
             startActivity(intent);
         }
         if (id == R.id.button_play_offline){

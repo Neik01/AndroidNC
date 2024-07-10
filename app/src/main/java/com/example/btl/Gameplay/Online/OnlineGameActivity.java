@@ -1,5 +1,6 @@
 package com.example.btl.Gameplay.Online;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,8 +11,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
+import com.example.btl.Fragment.ResultFragment;
 import com.example.btl.Gameplay.GameActitvity;
 import com.example.btl.Gameplay.Gameplay;
 import com.example.btl.R;
@@ -22,6 +25,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class OnlineGameActivity extends GameActitvity implements ValueEventListener,OnCompleteListener<DataSnapshot>{
 
@@ -35,15 +41,18 @@ public class OnlineGameActivity extends GameActitvity implements ValueEventListe
 
     GameRoom room;
     int playerTurn;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
 
         Bundle info = getIntent().getExtras();
 
         if(info != null){
             roomId = info.getString("roomId");
             room = (GameRoom) info.getSerializable("GameRoom");
-            playerTurn = info.getInt("playerTurn");
 
 
             super.setPlayer1Name(room.getPlayer1());
@@ -57,7 +66,7 @@ public class OnlineGameActivity extends GameActitvity implements ValueEventListe
         gameRef = database.getReference("games").child(roomId);
         gameBoard = super.getGameBoardView();
 
-        gameplay = Gameplay.getInstance();
+        this.gameplay = Gameplay.getInstance();
 
         room.setRoomState(RoomState.PLAYING);
 
@@ -68,21 +77,26 @@ public class OnlineGameActivity extends GameActitvity implements ValueEventListe
 
         playerName = sharedPreferences.getString("name", "Player");
 
+        if(playerName.equals(room.getPlayer1()))
+            playerTurn = 1;
+        else
+            playerTurn = 2;
+        Log.e("OnlineGame","onCreate");
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
             if (room.getTurns()== playerTurn){
-
+                this.gameplay = Gameplay.getInstance();
                 ImageView imageView = (ImageView) view.findViewById(R.id.iv_game_cell);
-                int player= gameplay.getPlayerTurn();
+                int player= this.gameplay.getPlayerTurn();
 
-                if (gameplay.move(position)){
+                if (this.gameplay.move(position)){
                     if (gameplay.getPlayerTurn() == playerTurn){
                         makeMove(position);
                     }
-
+                    Log.e("OnlineGame","onItemClick"+position);
                     updateBoard(imageView,player);
 
 
@@ -92,10 +106,15 @@ public class OnlineGameActivity extends GameActitvity implements ValueEventListe
 
                         updateTurnView(gameplay.getPlayerTurn());
                     }
-                }
-            }
+                    else {
+                        room.setRoomState(RoomState.FINISHED);
+                        gameRef.updateChildren(room.toUpdateMap());
+                        gameRef.child("turns").removeEventListener(this);
 
-            else  Toast.makeText(this, "It's not your turn", Toast.LENGTH_SHORT).show();
+                    }
+                }}
+                else  Toast.makeText(this, "It's not your turn", Toast.LENGTH_SHORT).show();
+
 
     }
 
@@ -140,5 +159,35 @@ public class OnlineGameActivity extends GameActitvity implements ValueEventListe
             gameBoard.performItemClick(imageView, move, itemId);
 
         }
+    }
+
+    @Override
+    public Bundle setBundleForResultFragment(String winnerString1, String winnerString2) {
+        Bundle bundle = new Bundle();
+        bundle.putString("winnerString1", winnerString1);
+        bundle.putString("winnerString2", winnerString2);
+        bundle.putSerializable("game", gameplay);
+        bundle.putSerializable("room", room);
+        bundle.putString("roomId", roomId);
+        return bundle;
+    }
+
+
+    @Override
+    public boolean checkWinner(int position) {
+        if(gameplay.checkWinner(position)){
+            String winnerString1= super.player1Name+" chiến thắng";
+            String winnerString2 = player2Name+" chiến thắng";
+            Bundle bundle = setBundleForResultFragment(winnerString1,winnerString2);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.game_result_container, ResultFragment.newInstance(bundle))
+                    .commit();
+
+            timer.cancelTimer();
+            this.gameplay.destroyInstance();
+            return true;
+        }
+        return false;
     }
 }

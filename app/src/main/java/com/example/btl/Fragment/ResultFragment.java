@@ -19,7 +19,9 @@ import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 import com.example.btl.Gameplay.Gameplay;
+import com.example.btl.Gameplay.Online.GameRoom;
 import com.example.btl.Gameplay.Online.OnlineGameActivity;
+import com.example.btl.Gameplay.Online.WaitingRoomActivity;
 import com.example.btl.MainActivity;
 import com.example.btl.R;
 
@@ -46,12 +48,9 @@ public class ResultFragment extends Fragment implements View.OnTouchListener,Vie
     }
 
 
-    public static ResultFragment newInstance(Gameplay gameplay, String winnerString1, String winnerString2) {
+    public static ResultFragment newInstance(Bundle bundle) {
         ResultFragment fragment = new ResultFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("game", gameplay);
-        bundle.putString("winnerString1",winnerString1);
-        bundle.putString("winnerString2",winnerString2);
+
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -65,6 +64,7 @@ public class ResultFragment extends Fragment implements View.OnTouchListener,Vie
 
         this.winnerString1 = getArguments().getString("winnerString1");
         this.winnerString2 = getArguments().getString("winnerString2");
+
 
         this.rootLayout = view.findViewById(R.id.result_root);
 
@@ -84,12 +84,12 @@ public class ResultFragment extends Fragment implements View.OnTouchListener,Vie
             mediaPlayer.start();
 
         }
-
-
         if (gameplay.getPlayerTurn()==1)
             resultTextView.setText(winnerString1.toUpperCase());
         else
             resultTextView.setText(winnerString2.toUpperCase());
+
+
         return view;
     }
 
@@ -104,10 +104,23 @@ public class ResultFragment extends Fragment implements View.OnTouchListener,Vie
         if (id == R.id.rematch_btn) {
 
             if(this.getActivity() instanceof OnlineGameActivity){
-                Log.e("Result","From online activity");
+               this.getActivity().finish();
+               String roomId = getArguments().getString("roomId");
+               GameRoom gameRoom = (GameRoom) getArguments().getSerializable("room");
+
+
+               Intent intent = new Intent(this.getActivity(), WaitingRoomActivity.class);
+               intent.putExtra("origin","ResultFragment");
+               intent.putExtra("roomId",roomId);
+               intent.putExtra("room",gameRoom);
+               startActivity(intent);
+
             }
-            this.getActivity().recreate();
-            this.getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+            else{
+                this.getActivity().recreate();
+                this.getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+            }
+
         }
         else if (id == R.id.result_exit_btn) {
             Intent intent = new Intent(this.getActivity(), MainActivity.class);

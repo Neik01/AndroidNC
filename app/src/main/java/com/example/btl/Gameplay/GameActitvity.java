@@ -27,16 +27,15 @@ public class GameActitvity extends AppCompatActivity implements
     private Gameplay gameplay;
 
     GridView gameBoardView;
-    private Timer timer;
+    protected Timer timer;
     TextView turnTextView;
 
     TextView timerView;
 
     BoardGameAdapter boardGameAdapter;
 
-    private  String player1Name;
-
-    private  String player2Name;
+    protected String player1Name;
+    protected String player2Name;
 
     private TextView player1NameView;
 
@@ -106,8 +105,10 @@ public class GameActitvity extends AppCompatActivity implements
     public void onFinish() {
         String winnerString1= player2Name+" chiến thắng";
         String winnerString2 = player1Name+" chiến thắng";
+        Bundle bundle = setBundleForResultFragment(winnerString1,winnerString2);
+
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.game_result_container,ResultFragment.newInstance(gameplay,winnerString1,winnerString2))
+                .replace(R.id.game_result_container,ResultFragment.newInstance(bundle))
                 .commit();
         this.gameplay.destroyInstance();
     }
@@ -123,7 +124,7 @@ public class GameActitvity extends AppCompatActivity implements
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         ImageView imageView = (ImageView) view.findViewById(R.id.iv_game_cell);
 
-        int player= gameplay.getPlayerTurn();
+        int player = gameplay.getPlayerTurn();
 
         if (gameplay.move(position)){
 
@@ -144,8 +145,10 @@ public class GameActitvity extends AppCompatActivity implements
         if(gameplay.checkWinner(position)){
             String winnerString1= player1Name+" chiến thắng";
             String winnerString2 = player2Name+" chiến thắng";
+            Bundle bundle = setBundleForResultFragment(winnerString1,winnerString2);
+
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.game_result_container, ResultFragment.newInstance(gameplay,winnerString1,winnerString2))
+                    .replace(R.id.game_result_container, ResultFragment.newInstance(bundle))
                     .commit();
 
             timer.cancelTimer();
@@ -162,22 +165,37 @@ public class GameActitvity extends AppCompatActivity implements
             mediaPlayer.start();
         }
 
-        if (player==1){
-            imageView.setImageResource(R.drawable.cross);
-        }
-        else if (player==2){
-            imageView.setImageResource(R.drawable.circle);
-        }
+        runOnUiThread(() -> {
+            if (player==1){
+                imageView.setImageResource(R.drawable.cross);
+            }
+            else if (player==2){
+                imageView.setImageResource(R.drawable.circle);
+            }
+        });
+
     }
 
     public void updateTurnView(int player){
 //        timer.startTimer(31000,this);
-        if (player ==1){
-            turnTextView.setText("Lượt của "+ player1Name);
-        }
-        else{
-            turnTextView.setText("Lượt của "+ player2Name);
-        }
+        runOnUiThread(() -> {
+            if (player ==1){
+                turnTextView.setText("Lượt của "+ player1Name);
+            }
+            else{
+                turnTextView.setText("Lượt của "+ player2Name);
+            }
+        });
+
+    }
+
+    public Bundle setBundleForResultFragment(String winnerString1,String winnerString2){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("game",gameplay);
+        bundle.putString("winnerString1",winnerString1);
+        bundle.putString("winnerString2",winnerString2);
+
+        return bundle;
     }
 
     public void setPlayer1Name(String player1Name) {

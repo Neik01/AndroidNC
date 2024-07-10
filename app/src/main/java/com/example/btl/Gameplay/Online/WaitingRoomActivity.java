@@ -67,8 +67,43 @@ public class WaitingRoomActivity extends AppCompatActivity implements ValueEvent
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         playerName= sharedPreferences.getString("name", "Player 1");
 
-        intent = new Intent(this,OnlineGameActivity.class);
-        findRoom();
+
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null){
+            String origin = extras.getString("origin");
+            if (origin.equals("MainActivity")){
+                findRoom();
+            } else if (origin.equals("ResultFragment")) {
+
+                String roomId = extras.getString("roomId");
+                GameRoom room = (GameRoom) extras.getSerializable("room");
+                rematch(roomId,room);
+            }
+        }
+
+    }
+
+    public void rematch(String roomId, GameRoom room) {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                 gameRef.child(roomId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        GameRoom gameRoom = task.getResult().getValue(GameRoom.class);
+                        if (gameRoom.getRoomState()== RoomState.REMATCH_WAITING){
+                            joinRoom(roomId,gameRoom);
+                        } else if (gameRoom.getRoomState()== RoomState.FINISHED) {
+                            createRematch(roomId,gameRoom);
+                        }
+                    }
+                });
+            }
+        });
+
 
     }
 
@@ -92,15 +127,11 @@ public class WaitingRoomActivity extends AppCompatActivity implements ValueEvent
                             }
 
                         }
-
                         createRoom();
                     }
                 });
             }
         });
-        
-
-
     }
 
     private void createRoom() {
@@ -110,8 +141,6 @@ public class WaitingRoomActivity extends AppCompatActivity implements ValueEvent
         room.setRoomState(RoomState.WAITING);
         room.setPlayer1(playerName);
         room.setTurns(1);
-
-        intent.putExtra("playerTurn",1);
 
         roomId = gameRef.push().getKey();
         gameRef.child(roomId).setValue(room.toInitialMap());
@@ -123,12 +152,37 @@ public class WaitingRoomActivity extends AppCompatActivity implements ValueEvent
         room.setPlayer2(playerName);
         gameRef.child(roomId).updateChildren(room.toInitialMap());
 
-        intent.putExtra("playerTurn",2);
-
         showPlayerContainter(room);
 
         startGame(roomId,room);
     }
+
+    private void createRematch(String roomId, GameRoom room) {
+        room.setTurns(1);
+
+        room.setPlayer1(playerName);
+        room.setPlayer2(null);
+
+        room.setRoomState(RoomState.REMATCH_WAITING);
+        gameRef.child(roomId).updateChildren(room.toInitialMap());
+        gameRef.child(roomId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                GameRoom gameRoom= snapshot.getValue(GameRoom.class);
+                if (gameRoom.getRoomState()== RoomState.REMATCH_WAITING&&gameRoom.getPlayer2()!=null){
+                    gameRoom.setRoomState(RoomState.PLAYING);
+                    gameRef.child(roomId).updateChildren(gameRoom.toInitialMap());
+                    showPlayerContainter(gameRoom);
+                    startGame(roomId,gameRoom);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 
     @Override
     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -155,10 +209,10 @@ public class WaitingRoomActivity extends AppCompatActivity implements ValueEvent
     }
 
     public void startGame(String roomId,GameRoom gameRoom){
+        intent = new Intent(this,OnlineGameActivity.class);
 
         intent.putExtra("roomId", roomId);
         intent.putExtra("GameRoom", gameRoom);
-        intent.putExtra("playerName", playerName);
         startActivity(intent);
         gameRef.removeEventListener(this);
         finish();
@@ -170,7 +224,6 @@ public class WaitingRoomActivity extends AppCompatActivity implements ValueEvent
                 player2.setText(gameRoom.getPlayer2());
                 player1.setText(gameRoom.getPlayer1());
                 playerContainer.setVisibility(View.VISIBLE);
-
 
         });
     }

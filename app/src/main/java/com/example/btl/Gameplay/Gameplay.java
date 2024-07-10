@@ -38,7 +38,7 @@ public class Gameplay implements Serializable {
         int row=coord[0];
         int col=coord[1];
 
-        if(gameplay!=null){
+        if(this.gameplay!=null){
             if(this.gameBoard[row][col]==0){
                 this.gameBoard[row][col]=this.playerTurn;
 
