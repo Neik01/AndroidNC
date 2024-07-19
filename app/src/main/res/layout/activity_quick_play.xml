@@ -5,8 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Gameplay.Online.WaitingRoomActivity"
-    android:background="@color/blue"
+    tools:context=".Gameplay.Online.QuickPlayActivity"
+    android:background="?colorAccent"
     >
 
     <TextView
@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ready"
-        android:textColor="@color/white"
+        android:textColor="?colorOnBackground"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -105,4 +105,21 @@
             </TextView>
         </LinearLayout>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/cancel_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="HỦY"
+        android:textSize="30dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/white"
+        android:textColor="?colorOnBackground"
+
+        >
+
+    </Button>
 </androidx.constraintlayout.widget.ConstraintLayout>

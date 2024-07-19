@@ -5,11 +5,15 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="?colorPrimary"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+
+        >
 
         <ImageButton
             android:id="@+id/settings_button"
@@ -18,9 +22,10 @@
             android:src="@drawable/settings_cogwheel_button_svgrepo_com"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:background="@color/design_default_color_background"
+            android:background="?colorPrimary"
             android:layout_marginTop="15dp"
             android:layout_marginStart="15dp"
+            app:tint="?colorOnBackground"
             >
 
         </ImageButton>
@@ -32,8 +37,8 @@
             android:src="@drawable/exit_svgrepo_com"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:background="@color/design_default_color_background"
-
+            android:background="?colorPrimary"
+            app:tint="?colorOnBackground"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="15dp"
             >
@@ -55,10 +60,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cờ Caro"
-                android:textColor="@color/blue"
+                android:textAllCaps="true"
+                android:textColor="?colorOnBackground"
                 android:textSize="40dp"
                 android:layout_alignTop="@+id/logo_image"
                 android:layout_gravity="center"
+                android:fontFamily="sans-serif-black"
+
                 />
 
             <ImageView
@@ -67,6 +75,7 @@
                 android:layout_height="wrap_content"
                 android:src="@mipmap/logo_foreground"
                 android:layout_gravity="center"
+
                 />
 
             <LinearLayout
@@ -82,7 +91,9 @@
                     android:text="Chơi Online"
                     android:textColor="@color/white"
                     android:textSize="30dp"
-                    android:backgroundTint="@color/blue"
+                    android:backgroundTint="?colorOnBackground"
+                    android:fontFamily="sans-serif"
+                    android:elevation="30dp"
                     >
                 </Button>
 
@@ -92,8 +103,11 @@
                     android:layout_height="wrap_content"
                     android:text="Chơi Offline"
                     android:textColor="@color/white"
-                    android:backgroundTint="@color/blue"
+                    android:backgroundTint="?colorOnBackground"
                     android:textSize="30dp"
+                    android:fontFamily="sans-serif"
+                    android:elevation="30dp"
+
                     >
 
                 </Button>
@@ -103,8 +117,11 @@
                     android:layout_height="wrap_content"
                     android:text="Chơi với máy"
                     android:textColor="@color/white"
-                    android:backgroundTint="@color/blue"
+                    android:backgroundTint="?colorOnBackground"
                     android:textSize="30dp"
+                    android:fontFamily="sans-serif"
+                    android:elevation="30dp"
+
                     >
 
                 </Button>

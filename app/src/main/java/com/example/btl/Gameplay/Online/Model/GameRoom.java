@@ -1,4 +1,4 @@
-package com.example.btl.Gameplay.Online;
+package com.example.btl.Gameplay.Online.Model;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -7,6 +7,8 @@ import java.util.Map;
 public class GameRoom implements Serializable {
 
     private Map<String, Integer> moves = new HashMap<String, Integer>();
+
+    private String roomId;
 
     private String player1;
 
@@ -62,10 +64,19 @@ public class GameRoom implements Serializable {
         this.roomState = roomState;
     }
 
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
+    }
+
     @Override
     public String toString() {
-        return "GameModel{" +
+        return "GameRoom{" +
                 "moves=" + moves +
+                ", roomId='" + roomId + '\'' +
                 ", player1='" + player1 + '\'' +
                 ", player2='" + player2 + '\'' +
                 ", turns=" + turns +
@@ -77,6 +88,7 @@ public class GameRoom implements Serializable {
         Map<String,Object> map = new HashMap<>();
         moves.put("player1",  -1);
         moves.put("player2",  -1);
+        map.put("roomId", roomId);
         map.put("moves", moves);
         map.put("player1",player1);
         map.put("player2",player2);
@@ -90,13 +102,16 @@ public class GameRoom implements Serializable {
     public Map<String,Object> toUpdateMap(){
         Map<String,Object> map = new HashMap<>();
         map.put("moves", moves);
+        map.put("roomId", roomId);
         map.put("player1",player1);
         map.put("player2",player2);
         map.put("turns", turns);
         map.put("roomState", roomState);
         return map;
     }
-    private class Turn implements Serializable{
-        private int turn;
+    public String createId(String lastId){
+        int intId = Integer.parseInt(lastId)+1;
+
+        return String.format("%04d",intId);
     }
 }

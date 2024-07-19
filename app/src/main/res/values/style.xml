@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.BTL" parent="Theme.Material3.DayNight.NoActionBar">
+
+        <item name="colorAccent">@color/blue</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorOnBackground">@color/blue</item>
+        <item name="gameBoardStyle">@style/Theme.BTL.GameBoard</item>
+        <item name="boardCellStyle">@style/Theme.BTL.BoardCell</item>
+        <item name="crossColor">@color/red</item>
+        <item name="circleColor">@color/green</item>
+    </style>
+
+
+    <style name="Theme.BTL.GameBoard">
+        <item name="android:background">@color/charcoal</item >
+        <item name="android:backgroundTint">@color/charcoal</item >
+
+    </style>
+
+    <style name="Theme.BTL.BoardCell">
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="Theme.BTL.Dark" >
+        <!-- Customize your dark theme here. -->
+        <item name="colorAccent">@color/light_dark</item>
+        <item name="colorPrimary">@color/light_dark</item>
+        <item name="colorOnBackground">@color/light_green</item>
+        <item name="gameBoardStyle">@style/Theme.BTL.Dark.GameBoard</item>
+        <item name="boardCellStyle">@style/Theme.BTL.Dark.BoardCell</item>
+        <item name="crossColor">@color/orange</item>
+        <item name="circleColor">@color/magenta</item>
+    </style>
+
+    <style name="Theme.BTL.Dark.GameBoard">
+        <item name="android:background">@color/white</item >
+        <item name="android:backgroundTint">@color/white</item >
+    </style>
+
+    <style name="Theme.BTL.Dark.BoardCell">
+        <item name="android:background">@color/charcoal</item>
+    </style>
+</resources>

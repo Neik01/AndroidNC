@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,11 +18,14 @@ import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 import com.example.btl.Gameplay.Gameplay;
-import com.example.btl.Gameplay.Online.GameRoom;
+import com.example.btl.Gameplay.Online.Model.GameRoom;
+import com.example.btl.Gameplay.Online.Model.RoomState;
 import com.example.btl.Gameplay.Online.OnlineGameActivity;
-import com.example.btl.Gameplay.Online.WaitingRoomActivity;
+import com.example.btl.Gameplay.Online.QuickPlayActivity;
 import com.example.btl.MainActivity;
 import com.example.btl.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class ResultFragment extends Fragment implements View.OnTouchListener,View.OnClickListener {
 
@@ -109,7 +111,7 @@ public class ResultFragment extends Fragment implements View.OnTouchListener,Vie
                GameRoom gameRoom = (GameRoom) getArguments().getSerializable("room");
 
 
-               Intent intent = new Intent(this.getActivity(), WaitingRoomActivity.class);
+               Intent intent = new Intent(this.getActivity(), QuickPlayActivity.class);
                intent.putExtra("origin","ResultFragment");
                intent.putExtra("roomId",roomId);
                intent.putExtra("room",gameRoom);

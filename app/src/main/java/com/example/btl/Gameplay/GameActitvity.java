@@ -2,24 +2,36 @@ package com.example.btl.Gameplay;
 
 
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.preference.PreferenceManager;
 
 import com.example.btl.Fragment.ResultFragment;
+import com.example.btl.Fragment.SettingsFragment;
 import com.example.btl.R;
+import com.google.android.material.color.MaterialColors;
 
 public class GameActitvity extends AppCompatActivity implements
         Timer.TimerListener, AdapterView.OnItemClickListener {
@@ -28,8 +40,6 @@ public class GameActitvity extends AppCompatActivity implements
 
     GridView gameBoardView;
     protected Timer timer;
-    TextView turnTextView;
-
     TextView timerView;
 
     BoardGameAdapter boardGameAdapter;
@@ -43,8 +53,11 @@ public class GameActitvity extends AppCompatActivity implements
 
     private boolean isSoundOn;
 
+    ImageButton backButton, settingsButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        switchTheme();
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_game_actitvity);
@@ -57,14 +70,24 @@ public class GameActitvity extends AppCompatActivity implements
         init();
     }
 
+    public void switchTheme() {
+        SharedPreferences sharedPref= PreferenceManager.getDefaultSharedPreferences(this);
+        String theme = sharedPref.getString("theme", "light");
+        if (theme.equals("light")){
+            setTheme(R.style.Theme_BTL);
+        }
+        else setTheme(R.style.Theme_BTL_Dark);
+        Log.e("SetTheme from main",theme);
+    }
+
+    @SuppressLint("ResourceType")
     public void init(){
+
         gameplay = Gameplay.getInstance();
 
         timer= Timer.getInstance();
 
         timerView= findViewById(R.id.timer);
-
-        turnTextView = findViewById(R.id.score_text);
 
         player1NameView = findViewById(R.id.player1_label);
 
@@ -82,15 +105,27 @@ public class GameActitvity extends AppCompatActivity implements
 
         gameBoardView.setOnItemClickListener(this::onItemClick);
 
-//        timer.startTimer(31000,this);
-
-        turnTextView.setText("Lượt của "+ player1Name);
+        timer.startTimer(31000,this);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         isSoundOn = sharedPreferences.getBoolean("sound",true);
 
-    }
 
+        @ColorInt int color = MaterialColors.getColor(this, R.attr.crossColor, Color.BLACK);
+        GradientDrawable player1Container = (GradientDrawable) findViewById(R.id.player1_container).getBackground();
+        player1Container.mutate();
+        player1Container.setStroke(dpToPx(4), color);
+
+
+        GradientDrawable player2Container = (GradientDrawable) findViewById(R.id.player2_container).getBackground();
+        player2Container.mutate();
+        player2Container.setStroke(dpToPx(4), ContextCompat.getColor(this, R.color.white));
+
+    }
+    private int dpToPx(int dp) {
+        Resources r = getResources();
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+    }
     @Override
     public void onTick(long millisUntilFinished) {
         runOnUiThread(new Runnable() {
@@ -115,6 +150,7 @@ public class GameActitvity extends AppCompatActivity implements
 
     @Override
     protected void onDestroy() {
+
         super.onDestroy();
         gameplay.destroyInstance();
         timer.cancelTimer();
@@ -176,14 +212,27 @@ public class GameActitvity extends AppCompatActivity implements
 
     }
 
+    @SuppressLint("ResourceType")
     public void updateTurnView(int player){
-//        timer.startTimer(31000,this);
+        timer.startTimer(31000,this);
+        GradientDrawable player1Container = (GradientDrawable) findViewById(R.id.player1_container).getBackground();
+        GradientDrawable player2Container = (GradientDrawable) findViewById(R.id.player2_container).getBackground();
+        player1Container.mutate();
+        player2Container.mutate();
+
         runOnUiThread(() -> {
             if (player ==1){
-                turnTextView.setText("Lượt của "+ player1Name);
+                @ColorInt int color = MaterialColors.getColor(this, R.attr.crossColor, Color.BLACK);
+                player1Container.setStroke(dpToPx(4), color);
+                player2Container.setStroke(dpToPx(4), ContextCompat.getColor(this, R.color.white));
+//                player1Container.setColor(ContextCompat.getColor(this, R.color.light_red));
+
             }
             else{
-                turnTextView.setText("Lượt của "+ player2Name);
+                @ColorInt int color = MaterialColors.getColor(this, R.attr.circleColor, Color.BLACK);
+                player2Container.setStroke(dpToPx(4), color);
+                player1Container.setStroke(dpToPx(4), ContextCompat.getColor(this, R.color.white));
+
             }
         });
 

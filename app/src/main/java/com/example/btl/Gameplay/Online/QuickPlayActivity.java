@@ -3,9 +3,12 @@ package com.example.btl.Gameplay.Online;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -15,9 +18,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.preference.PreferenceManager;
 
+import com.example.btl.Gameplay.Online.Model.GameRoom;
+import com.example.btl.Gameplay.Online.Model.RoomState;
 import com.example.btl.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,7 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class WaitingRoomActivity extends AppCompatActivity implements ValueEventListener {
+public class QuickPlayActivity extends AppCompatActivity implements ValueEventListener, View.OnClickListener {
 
     FirebaseDatabase database;
     DatabaseReference gameRef;
@@ -41,19 +44,24 @@ public class WaitingRoomActivity extends AppCompatActivity implements ValueEvent
 
     Intent intent;
 
+    Button cancelBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        switchTheme();
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_waiting_room);
+        setContentView(R.layout.activity_quick_play);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
+        cancelBtn = findViewById(R.id.cancel_button);
+        cancelBtn.setOnClickListener(this);
+
         readyText = findViewById(R.id.ready_text);
-        readyText.setText("Đang tìm đối thủ");
 
         playerContainer = findViewById(R.id.player_container);
         playerContainer.setVisibility(View.GONE);
@@ -73,10 +81,11 @@ public class WaitingRoomActivity extends AppCompatActivity implements ValueEvent
         if (extras != null){
             String origin = extras.getString("origin");
             if (origin.equals("MainActivity")){
+                readyText.setText("Đang tìm đối thủ");
                 findRoom();
             } else if (origin.equals("ResultFragment")) {
-
-                String roomId = extras.getString("roomId");
+                readyText.setText("Đang đợi đối thủ");
+                roomId = extras.getString("roomId");
                 GameRoom room = (GameRoom) extras.getSerializable("room");
                 rematch(roomId,room);
             }
@@ -84,25 +93,29 @@ public class WaitingRoomActivity extends AppCompatActivity implements ValueEvent
 
     }
 
+    public void switchTheme() {
+        SharedPreferences sharedPref= PreferenceManager.getDefaultSharedPreferences(this);
+        String theme = sharedPref.getString("theme", "light");
+        if (theme.equals("light")){
+            setTheme(R.style.Theme_BTL);
+        }
+        else setTheme(R.style.Theme_BTL_Dark);
+        Log.e("SetTheme from main",theme);
+    }
     public void rematch(String roomId, GameRoom room) {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                 gameRef.child(roomId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DataSnapshot> task) {
-                        GameRoom gameRoom = task.getResult().getValue(GameRoom.class);
-                        if (gameRoom.getRoomState()== RoomState.REMATCH_WAITING){
-                            joinRoom(roomId,gameRoom);
-                        } else if (gameRoom.getRoomState()== RoomState.FINISHED) {
-                            createRematch(roomId,gameRoom);
-                        }
-                    }
-                });
+        executorService.execute(() -> gameRef.child(roomId).get().addOnCompleteListener(task -> {
+            GameRoom gameRoom = task.getResult().getValue(GameRoom.class);
+            if (gameRoom.getRoomState()== RoomState.REMATCH_WAITING){
+                joinRoom(roomId,gameRoom);
+            } else if (gameRoom.getRoomState()== RoomState.FINISHED) {
+                createRematch(roomId,gameRoom);
+            } else if (gameRoom.getRoomState() == RoomState.CANCELLED) {
+                Toast.makeText(this,"Đối phương đã thoát khỏi phòng",Toast.LENGTH_SHORT).show();
+                finish();
             }
-        });
+        }));
 
 
     }
@@ -110,28 +123,20 @@ public class WaitingRoomActivity extends AppCompatActivity implements ValueEvent
     private void findRoom() {
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                gameRef.limitToLast(5).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DataSnapshot> task) {
-                        for (DataSnapshot data: task.getResult().getChildren()
-                        ) {
-                            String roomId = data.getKey();
-                            GameRoom room = data.getValue(GameRoom.class);
+        executorService.execute(() -> gameRef.limitToLast(5).get().addOnCompleteListener(task -> {
+            for (DataSnapshot data: task.getResult().getChildren()
+            ) {
+                String roomId = data.getKey();
+                GameRoom room = data.getValue(GameRoom.class);
 
-                            if(room.getRoomState() == RoomState.WAITING){
-                                joinRoom(roomId,room);
-                                return;
-                            }
+                if(room.getRoomState() == RoomState.WAITING){
+                    joinRoom(roomId,room);
+                    return;
+                }
 
-                        }
-                        createRoom();
-                    }
-                });
             }
-        });
+            createRoom();
+        }));
     }
 
     private void createRoom() {
@@ -214,6 +219,8 @@ public class WaitingRoomActivity extends AppCompatActivity implements ValueEvent
         intent.putExtra("roomId", roomId);
         intent.putExtra("GameRoom", gameRoom);
         startActivity(intent);
+        overridePendingTransition(R.anim.zoom_in,R.anim.static_animation);
+
         gameRef.removeEventListener(this);
         finish();
     }
@@ -224,7 +231,17 @@ public class WaitingRoomActivity extends AppCompatActivity implements ValueEvent
                 player2.setText(gameRoom.getPlayer2());
                 player1.setText(gameRoom.getPlayer1());
                 playerContainer.setVisibility(View.VISIBLE);
+                cancelBtn.setVisibility(View.GONE);
 
         });
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(roomId!=null){
+            gameRef.child(roomId).child("roomState").setValue(RoomState.CANCELLED);
+            gameRef.child(roomId).removeEventListener(this);
+            this.finish();
+        }
     }
 }

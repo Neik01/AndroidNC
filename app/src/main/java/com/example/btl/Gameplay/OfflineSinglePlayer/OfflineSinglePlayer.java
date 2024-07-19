@@ -54,15 +54,12 @@ public class OfflineSinglePlayer extends GameActitvity {
     }
 
     public void performBotMove(GridView gridView,int position){
-        gridView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                int move = botMove(position,1);
-                ImageView imageView = (ImageView) gridView.getChildAt(move);
-                long itemId = gridView.getAdapter().getItemId(move);
-                gridView.performItemClick(imageView, move, itemId);
+        gridView.postDelayed(() -> {
+            int move = botMove(position,1);
+            ImageView imageView = (ImageView) gridView.getChildAt(move);
+            long itemId = gridView.getAdapter().getItemId(move);
+            gridView.performItemClick(imageView, move, itemId);
 
-            }
         },1000);
     }
 

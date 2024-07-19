@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".Fragment.NotifFragment"
+    android:gravity="center"
+    android:background="@drawable/rounded_border"
+    >
+
+
+    <TextView
+        android:id="@+id/notif_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chưa đến lượt của bạn"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:textSize="30dp"
+        android:textColor="@color/light_red"
+        android:padding="15dp"
+        android:layout_marginHorizontal="20dp"
+        />
+
+</RelativeLayout>

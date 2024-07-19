@@ -12,7 +12,7 @@ public class Gameplay implements Serializable {
 
     private final int colNum = 15;
 
-    private final int rowNum = 17;
+    private final int rowNum = 20;
 
     private Gameplay(){
         this.gameBoard=new int[rowNum][colNum];

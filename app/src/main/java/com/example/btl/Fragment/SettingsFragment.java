@@ -11,9 +11,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
@@ -30,6 +34,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener,V
     CheckBox soundCheckBox;
 
     EditText nameEditText;
+
+    RadioGroup selectThemeRadioGroup;
     public SettingsFragment() {
         super(R.layout.settings_fragment);
     }
@@ -53,6 +59,15 @@ public class SettingsFragment extends Fragment implements View.OnClickListener,V
         nameEditText.setText(sharedPreferences.getString("name","Nhập tên bạn"));
         soundCheckBox.setChecked(sharedPreferences.getBoolean("sound",true));
 
+        selectThemeRadioGroup = view.findViewById(R.id.choose_theme_radiogroup);
+        String theme = sharedPreferences.getString("theme","light");
+        if(theme.equals("light")){
+            selectThemeRadioGroup.check(R.id.radioLightMode);
+        } else {
+            selectThemeRadioGroup.check(R.id.radioDarkMode);
+
+        }
+
         return view;
     }
 
@@ -66,7 +81,20 @@ public class SettingsFragment extends Fragment implements View.OnClickListener,V
 
             editor.putString("name", nameEditText.getText().toString());
             editor.putBoolean("sound", soundCheckBox.isChecked());
+
+            int themeMode = selectThemeRadioGroup.getCheckedRadioButtonId();
+            if (themeMode == R.id.radioLightMode){
+                this.getActivity().setTheme(R.style.Theme_BTL);
+                this.getActivity().recreate();
+            }
+            else {
+                this.getActivity().setTheme(R.style.Theme_BTL_Dark);
+                this.getActivity().recreate();
+            }
+            editor.putString("theme", selectThemeRadioGroup.getCheckedRadioButtonId() == R.id.radioLightMode ? "light" : "dark");
             editor.apply();
+
+
 
             getActivity().getSupportFragmentManager().popBackStack();
 

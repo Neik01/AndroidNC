@@ -7,11 +7,16 @@
     <color name="blue">#0175ff</color>
     <color name="yellow">#fcba03</color>
     <color name="cyan">#FF00FFFF</color>
-    <color name="magenta">#FFFF00FF</color>
+    <color name="magenta">#C8ACD6</color>
     <color name="transparent_black">#80000000</color>
     <color name="navy">#071952</color>
     <color name="teal">#37B7C3</color>
     <color name="dark_blue">#088395</color>
-    <color name="light_black">#4d4f4e</color>
+    <color name="charcoal">#6a7270</color>
     <color name="pastel_blue">#AAD7D9</color>
+    <color name="light_red">#FF4C4C</color>
+    <color name="light_dark">#2b3a46</color>
+    <color name="orange">#DC6B19</color>
+    <color name="purple">#6C0345</color>
+    <color name="light_green">#03C988</color>"
 </resources>

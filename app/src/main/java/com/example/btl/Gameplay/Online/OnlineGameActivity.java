@@ -1,8 +1,9 @@
 package com.example.btl.Gameplay.Online;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,12 +12,17 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 
+import com.example.btl.Fragment.NotifFragment;
 import com.example.btl.Fragment.ResultFragment;
 import com.example.btl.Gameplay.GameActitvity;
 import com.example.btl.Gameplay.Gameplay;
+import com.example.btl.Gameplay.Online.Model.GameRoom;
+import com.example.btl.Gameplay.Online.Model.RoomState;
 import com.example.btl.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -26,8 +32,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class OnlineGameActivity extends GameActitvity implements ValueEventListener,OnCompleteListener<DataSnapshot>{
 
@@ -81,7 +88,6 @@ public class OnlineGameActivity extends GameActitvity implements ValueEventListe
             playerTurn = 1;
         else
             playerTurn = 2;
-        Log.e("OnlineGame","onCreate");
     }
 
     @Override
@@ -113,11 +119,52 @@ public class OnlineGameActivity extends GameActitvity implements ValueEventListe
 
                     }
                 }}
-                else  Toast.makeText(this, "It's not your turn", Toast.LENGTH_SHORT).show();
+                else  {
+                    showFragment();
+
+            }
 
 
     }
 
+    private void showFragment() {
+        hideFragment();
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        fragmentTransaction.setCustomAnimations(R.anim.slide_in_bot, R.anim.slide_out_top);
+        fragmentTransaction.replace(R.id.notif_fragment_container, new NotifFragment());
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+
+        // Hide the fragment after 2 seconds using ExecutorService
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        executor.schedule(new Runnable() {
+            @Override
+            public void run() {
+                // Post the UI operations back to the main thread
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        hideFragment();
+                    }
+                });
+            }
+        }, 1500, TimeUnit.MILLISECONDS);
+    }
+
+    public void hideFragment(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        fragmentTransaction.setCustomAnimations(R.anim.slide_in_bot, R.anim.slide_out_top);
+        Fragment fragment = fragmentManager.findFragmentById(R.id.notif_fragment_container);
+        if (fragment != null) {
+            fragmentTransaction.remove(fragment);
+            fragmentTransaction.commit();
+        }
+    }
     private void makeMove(int move) {
 
         String playerKey = (playerTurn == 1) ? "player1" : "player2";
@@ -189,5 +236,12 @@ public class OnlineGameActivity extends GameActitvity implements ValueEventListe
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onFinish() {
+        super.onFinish();
+        room.setRoomState(RoomState.FINISHED);
+        gameRef.updateChildren(room.toUpdateMap());
     }
 }
