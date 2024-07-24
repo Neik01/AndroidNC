@@ -5,6 +5,7 @@
         <attr name="boardCellStyle" format="reference"/>
         <attr name="crossColor" format="reference"/>
         <attr name="circleColor" format="reference"/>
+        <attr name="textColorOnBackground" format="reference"/>
     </declare-styleable>
 
 </resources>

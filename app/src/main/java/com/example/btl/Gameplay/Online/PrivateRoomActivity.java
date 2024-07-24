@@ -114,7 +114,7 @@ public class PrivateRoomActivity extends AppCompatActivity implements View.OnCli
             setTheme(R.style.Theme_BTL);
         }
         else setTheme(R.style.Theme_BTL_Dark);
-        Log.e("SetTheme from main",theme);
+
     }
 
     public void createRoom(){
@@ -131,6 +131,7 @@ public class PrivateRoomActivity extends AppCompatActivity implements View.OnCli
             for (DataSnapshot snapshot : task.getResult().getChildren()) {
                 GameRoom lastGameRoom = snapshot.getValue(GameRoom.class);
                 Log.e("RoomKey", lastGameRoom.toString());
+
                 if(lastGameRoom.getRoomId() != null){
                     gameRoom.setRoomId(gameRoom.createId(lastGameRoom.getRoomId()));
                 }else{
@@ -167,15 +168,19 @@ public class PrivateRoomActivity extends AppCompatActivity implements View.OnCli
     public void onDataChange(@NonNull DataSnapshot snapshot) {
         Log.e("PrivateRoomActivity", snapshot.toString());
         GameRoom gameRoom1 = snapshot.getValue(GameRoom.class);
-        if (gameRoom1.getPlayer2()!=null){
-            this.gameRoom.setPlayer2(gameRoom1.getPlayer2()) ;
-            notifTV.setText("");
-            showPlayerContainer(gameRoom1);
+
+        if (gameRoom1!=null){
+            if (gameRoom1.getPlayer2()!=null){
+                this.gameRoom.setPlayer2(gameRoom1.getPlayer2()) ;
+                notifTV.setText("");
+                showPlayerContainer(gameRoom1);
+            }
+
+            if (gameRoom1.getRoomState()== RoomState.PLAYING){
+                startGame();
+            }
         }
 
-        if (gameRoom1.getRoomState()== RoomState.PLAYING){
-            startGame();
-        }
     }
 
     @Override

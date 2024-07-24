@@ -5,6 +5,7 @@
         <item name="colorAccent">@color/blue</item>
         <item name="colorPrimary">@color/white</item>
         <item name="colorOnBackground">@color/blue</item>
+        <item name="textColorOnBackground">@color/white</item>
         <item name="gameBoardStyle">@style/Theme.BTL.GameBoard</item>
         <item name="boardCellStyle">@style/Theme.BTL.BoardCell</item>
         <item name="crossColor">@color/red</item>
@@ -27,6 +28,7 @@
         <item name="colorAccent">@color/light_dark</item>
         <item name="colorPrimary">@color/light_dark</item>
         <item name="colorOnBackground">@color/light_green</item>
+        <item name="textColorOnBackground">@color/light_green</item>
         <item name="gameBoardStyle">@style/Theme.BTL.Dark.GameBoard</item>
         <item name="boardCellStyle">@style/Theme.BTL.Dark.BoardCell</item>
         <item name="crossColor">@color/orange</item>

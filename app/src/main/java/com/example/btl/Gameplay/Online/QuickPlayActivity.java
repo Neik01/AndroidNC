@@ -124,28 +124,32 @@ public class QuickPlayActivity extends AppCompatActivity implements ValueEventLi
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> gameRef.limitToLast(5).get().addOnCompleteListener(task -> {
+            String lastId="";
             for (DataSnapshot data: task.getResult().getChildren()
             ) {
                 String roomId = data.getKey();
                 GameRoom room = data.getValue(GameRoom.class);
-
+                lastId=room.getRoomId();
                 if(room.getRoomState() == RoomState.WAITING){
                     joinRoom(roomId,room);
                     return;
                 }
 
             }
-            createRoom();
+            createRoom(lastId);
         }));
     }
 
-    private void createRoom() {
+    private void createRoom(String lastId) {
 
         GameRoom room = new GameRoom();
 
         room.setRoomState(RoomState.WAITING);
         room.setPlayer1(playerName);
         room.setTurns(1);
+        if (lastId==null){
+            room.setRoomId(room.createId("0000"));
+        }else room.setRoomId(room.createId(lastId));
 
         roomId = gameRef.push().getKey();
         gameRef.child(roomId).setValue(room.toInitialMap());

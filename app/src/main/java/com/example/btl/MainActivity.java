@@ -25,7 +25,7 @@ import com.example.btl.Gameplay.Online.QuickPlayActivity;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
 
-     ImageButton settingsButton;
+     ImageButton settingsButton,exitButton;
 
      Button buttonPlayOnline;
 
@@ -48,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         settingsButton = findViewById(R.id.settings_button);
         settingsButton.setOnClickListener(this);
+
+        exitButton = findViewById(R.id.exit_button);
+        exitButton.setOnClickListener(v -> finish());
 
         buttonPlayOnline =findViewById(R.id.button_play_online);
         buttonPlayOnline.setOnClickListener(this);

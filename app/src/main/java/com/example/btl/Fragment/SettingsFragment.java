@@ -56,7 +56,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener,V
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        nameEditText.setText(sharedPreferences.getString("name","Nhập tên bạn"));
+        nameEditText.setText(sharedPreferences.getString("name","Nhập tên bạn").trim());
         soundCheckBox.setChecked(sharedPreferences.getBoolean("sound",true));
 
         selectThemeRadioGroup = view.findViewById(R.id.choose_theme_radiogroup);
@@ -79,7 +79,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener,V
         if(id == R.id.settings_close_btn){
             SharedPreferences.Editor editor = sharedPreferences.edit();
 
-            editor.putString("name", nameEditText.getText().toString());
+            editor.putString("name", nameEditText.getText().toString().trim());
             editor.putBoolean("sound", soundCheckBox.isChecked());
 
             int themeMode = selectThemeRadioGroup.getCheckedRadioButtonId();
